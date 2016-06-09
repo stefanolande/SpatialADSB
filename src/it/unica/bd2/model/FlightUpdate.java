@@ -17,11 +17,18 @@ public class FlightUpdate {
     public FlightUpdate() {
     }
 
-    public Document getDocumentWithoutPoint(){
+    public FlightUpdate(long flightID, String callsing, String hexIdent, Point point) {
+        this.flightID = flightID;
+        this.callsing = callsing;
+        this.hexIdent = hexIdent;
+        this.point = point;
+    }
+
+    public Document getDocumentWithoutPoint() {
         Document document = new Document("flightID", flightID).append("hexIdent", hexIdent);
 
-        if(callsing != null){
-            if(!callsing.equals("")){
+        if (callsing != null) {
+            if (!callsing.equals("")) {
                 document.append("callsign", callsing);
             }
         }
@@ -31,16 +38,16 @@ public class FlightUpdate {
         return document;
     }
 
-    public Document getPointDocument(){
+    public Document getPointDocument() {
         return new Document("altitude", point.altitude)
                 .append("latitude", point.latitude)
                 .append("longitude", point.longitude)
                 .append("timestamp", point.timestamp);
     }
 
-    public Document getDocument(){
+    public Document getDocument() {
         Document document = getDocumentWithoutPoint();
-        if (point != null){
+        if (point != null) {
             List<Document> points = new ArrayList<>();
             points.add(getPointDocument());
             document.append("points", points);
@@ -49,13 +56,6 @@ public class FlightUpdate {
         }
 
         return document;
-    }
-
-    public FlightUpdate(long flightID, String callsing, String hexIdent, Point point) {
-        this.flightID = flightID;
-        this.callsing = callsing;
-        this.hexIdent = hexIdent;
-        this.point = point;
     }
 
     public long getFlightID() {

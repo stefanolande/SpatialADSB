@@ -13,14 +13,39 @@ import java.util.List;
  * Created by stefano on 08/06/16.
  */
 public class MongoConnector {
+    private static MongoConnector instance;
     private MongoClient mongoClient;
     private MongoDatabase db;
     private MongoCollection<Document> flightsCollection;
+    private boolean connected = false;
+
+    private MongoConnector() {
+
+    }
+
+    public static MongoConnector getInstance() {
+        if (instance == null) {
+            instance = new MongoConnector();
+        }
+
+        return instance;
+    }
 
     public void connect() {
         mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
         db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
         flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
+
+        connected = true;
+    }
+
+    public void disconnect() {
+        mongoClient.close();
+        connected = false;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     /**
@@ -29,27 +54,29 @@ public class MongoConnector {
      * @param flightUpdate
      */
     public void update(FlightUpdate flightUpdate) {
-        long flightID = flightUpdate.getFlightID();
+        if (connected) {
+            long flightID = flightUpdate.getFlightID();
 
-        //check if the flight is already present
-        if (flightsCollection.find(new Document("flightID", flightID)).iterator().hasNext()) {
+            //check if the flight is already present
+            if (flightsCollection.find(new Document("flightID", flightID)).iterator().hasNext()) {
 
-            Document oldFlight = flightsCollection.find(new Document("flightID", flightID)).iterator().next();
-            //the document is already present, update it
-            List<Document> oldPoints = (List<Document>) oldFlight.get("points");
+                Document oldFlight = flightsCollection.find(new Document("flightID", flightID)).iterator().next();
+                //the document is already present, update it
+                List<Document> oldPoints = (List<Document>) oldFlight.get("points");
 
-            //check if we have to push a new point
-            if (flightUpdate.getPoint() != null) {
-                oldPoints.add(flightUpdate.getPointDocument());
+                //check if we have to push a new point
+                if (flightUpdate.getPoint() != null) {
+                    oldPoints.add(flightUpdate.getPointDocument());
+                }
+
+                flightsCollection.updateOne(new Document("flightID", flightID),
+                        new Document("$set", flightUpdate.getDocumentWithoutPoint().append("points", oldPoints)));
+
+
+            } else {
+                //we need to create a new document
+                flightsCollection.insertOne(flightUpdate.getDocument());
             }
-
-            flightsCollection.updateOne(new Document("flightID", flightID),
-                    new Document("$set", flightUpdate.getDocumentWithoutPoint().append("points", oldPoints)));
-
-
-        } else {
-            //we need to create a new document
-            flightsCollection.insertOne(flightUpdate.getDocument());
         }
     }
 }

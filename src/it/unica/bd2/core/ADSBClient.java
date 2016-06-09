@@ -1,5 +1,6 @@
 package it.unica.bd2.core;
 
+import com.mongodb.MongoInterruptedException;
 import it.unica.bd2.model.FlightUpdate;
 import it.unica.bd2.model.Point;
 
@@ -16,16 +17,29 @@ import java.net.Socket;
 public class ADSBClient {
     public static final String SERVER = "78.15.189.41";
     public static final int PORT = 443;
-
+    private static ADSBClient instance;
     private boolean connected = false;
     private MongoConnector mongoConnector;
+    private Thread receptionThread;
+
+    private ADSBClient() {
+
+    }
+
+    public static ADSBClient getInstance() {
+        if (instance == null) {
+            instance = new ADSBClient();
+        }
+
+        return instance;
+    }
 
     public void connect() {
         try {
             Socket socket = new Socket(Settings.ADSB_SERVER_IP, Settings.ADSB_SERVER_PORT);
             this.connected = true;
 
-            mongoConnector = new MongoConnector();
+            mongoConnector = MongoConnector.getInstance();
             mongoConnector.connect();
 
             receive(socket);
@@ -36,14 +50,26 @@ public class ADSBClient {
     }
 
     public void disconnect() {
+        if (receptionThread != null) {
+            receptionThread.interrupt();
+
+        }
+        if (mongoConnector != null) {
+            mongoConnector.disconnect();
+        }
+
         this.connected = false;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     /**
      * Start a reception cycle in a thread
      */
     private void receive(Socket socket) {
-        new Thread() {
+        this.receptionThread = new Thread() {
             @Override
             public void run() {
 
@@ -102,7 +128,15 @@ public class ADSBClient {
                 }
             }
 
-        }.start();
+        };
+
+        receptionThread.setDaemon(true);
+
+        try {
+            receptionThread.start();
+        } catch (MongoInterruptedException e) {
+
+        }
     }
 
 }
