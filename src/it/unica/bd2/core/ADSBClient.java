@@ -2,15 +2,13 @@ package it.unica.bd2.core;
 
 import it.unica.bd2.model.FlightUpdate;
 import it.unica.bd2.model.Point;
-import org.bson.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Created by stefano on 08/06/16.
@@ -24,7 +22,7 @@ public class ADSBClient {
 
     public void connect() {
         try {
-            Socket socket = new Socket(SERVER, PORT);
+            Socket socket = new Socket(Settings.ADSB_SERVER_IP, Settings.ADSB_SERVER_PORT);
             this.connected = true;
 
             mongoConnector = new MongoConnector();

@@ -6,7 +6,6 @@ import com.mongodb.client.MongoDatabase;
 import it.unica.bd2.model.FlightUpdate;
 import org.bson.Document;
 
-import javax.print.Doc;
 import java.util.List;
 
 
@@ -19,17 +18,16 @@ public class MongoConnector {
     private MongoCollection<Document> flightsCollection;
 
     public void connect() {
-        mongoClient = new MongoClient();
-        db = mongoClient.getDatabase("flights");
-        flightsCollection = db.getCollection("flights");
+        mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
+        db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
+        flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
     }
 
     /**
-     * Receives the document modellign a flight. If the flight is alreay present, it updates its info
+     * Receives the document modelling a flight. If the flight is already present, it updates its info
      *
      * @param flightUpdate
      */
-
     public void update(FlightUpdate flightUpdate) {
         long flightID = flightUpdate.getFlightID();
 
@@ -39,14 +37,16 @@ public class MongoConnector {
             Document oldFlight = flightsCollection.find(new Document("flightID", flightID)).iterator().next();
             //the document is already present, update it
             List<Document> oldPoints = (List<Document>) oldFlight.get("points");
-            flightsCollection.updateOne(new Document("flightID", flightID),
-                    new Document("$set", flightUpdate.getDocumentWithoutPoint().append("points", oldPoints)));
 
             //check if we have to push a new point
             if (flightUpdate.getPoint() != null) {
-                flightsCollection.updateOne(new Document("flightID", flightID),
-                        new Document("$push", new Document("points", flightUpdate.getPointDocument())));
+                oldPoints.add(flightUpdate.getPointDocument());
             }
+
+            flightsCollection.updateOne(new Document("flightID", flightID),
+                    new Document("$set", flightUpdate.getDocumentWithoutPoint().append("points", oldPoints)));
+
+
         } else {
             //we need to create a new document
             flightsCollection.insertOne(flightUpdate.getDocument());
