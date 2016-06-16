@@ -2,6 +2,7 @@ package it.unica.bd2.core;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import it.unica.bd2.model.FlightUpdate;
 import org.bson.Document;
@@ -32,6 +33,7 @@ public class MongoConnector {
     }
 
     public void connect() {
+
         mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
         db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
         flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
@@ -78,5 +80,13 @@ public class MongoConnector {
                 flightsCollection.insertOne(flightUpdate.getDocument());
             }
         }
+    }
+
+    public MongoCursor<Document> read() {
+        if (connected) {
+            return flightsCollection.find(new Document()).iterator();
+        }
+
+        return null;
     }
 }

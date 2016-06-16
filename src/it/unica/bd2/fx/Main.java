@@ -22,7 +22,10 @@ public class Main extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("interface.fxml"));
         fxmlLoader.load();
+
+        // Give the controller access to the main app.
         controller = fxmlLoader.getController();
+        controller.setMainApp(this);
 
         primaryStage.show();
     }

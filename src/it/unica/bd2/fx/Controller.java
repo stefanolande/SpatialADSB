@@ -9,9 +9,11 @@ import javafx.scene.text.Text;
 public class Controller {
 
     @FXML
-    public Text adsbStatusString;
+    private Text adsbStatusString;
     @FXML
-    public Button adsbButton;
+    private Button adsbButton;
+
+    private Main mainApp;
 
     @FXML
     private void adsbButtonClick(ActionEvent event) {
@@ -32,5 +34,9 @@ public class Controller {
     public void destroy() {
         ADSBClient.getInstance().disconnect();
 
+    }
+
+    public void setMainApp(Main mainApp) {
+        this.mainApp = mainApp;
     }
 }
