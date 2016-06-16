@@ -85,12 +85,14 @@ public class PostGIS {
 
                     int i = 0;
                     for (Document point : pointList) {
-                        pointsVector[i] = new Point(point.getDouble("latitude"), point.getDouble("longitude"), new Double(point.getInteger("altitude")));
+                        //pointsVector[i] = new Point(point.getDouble("latitude"), point.getDouble("longitude"), new Double(point.getInteger("altitude")));
+                        pointsVector[i] = new Point(point.getDouble("longitude"), point.getDouble("latitude"), new Double(point.getInteger("altitude")));
                         i++;
                     }
                     LineString track = new LineString(pointsVector);
                     PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO flights (flightid, track) VALUES (?, ?)");
                     preparedStatement.setString(1, flightId.toString());
+                    track.setSrid(4326);
                     preparedStatement.setObject(2, new PGgeometry(track));
                     int num = preparedStatement.executeUpdate();
                     preparedStatement.close();
@@ -114,7 +116,13 @@ public class PostGIS {
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT flightid, track FROM flights");
+            ResultSet resultSet = statement.executeQuery("select c.nome, count(*) as sorvoli " +
+                    "from comuni c " +
+                    "join flights f " +
+                    "on st_intersects(c.geom, f.track) " +
+                    "group by c.nome " +
+                    "order by sorvoli desc;");
+
             while (resultSet.next()) {
                 /*
 				* Retrieve the geometry as an object then cast it to the geometry type.
