@@ -2,16 +2,18 @@ package it.unica.bd2.core;
 
 import com.mongodb.client.MongoCursor;
 import org.bson.Document;
+import org.postgis.Geometry;
 import org.postgis.LineString;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
 import org.postgresql.util.PGobject;
 
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
+/**
+ * Created by serus on 16/06/16.
+ */
 public class PostGIS {
     private java.sql.Connection connection;
     private boolean isConnected = false;
@@ -85,4 +87,37 @@ public class PostGIS {
 
         }
     }
+
+    /*
+    * TO DO
+     */
+    public void query() {
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT flightid, track FROM flights");
+            while (resultSet.next()) {
+                /*
+				* Retrieve the geometry as an object then cast it to the geometry type.
+				* Print things out.
+				*/
+                String flightID = resultSet.getString(1);
+                PGgeometry track = (PGgeometry) resultSet.getObject(2);
+
+                if (track.getGeoType() == Geometry.LINESTRING) {
+                    System.out.println("FlightID " + flightID);
+                } else {
+                    System.out.println("Track " + track.getGeoType() + " having flightID " + flightID);
+                }
+            }
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }
