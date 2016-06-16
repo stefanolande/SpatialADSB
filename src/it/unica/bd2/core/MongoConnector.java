@@ -16,7 +16,6 @@ import java.util.List;
 public class MongoConnector {
     private static MongoConnector instance;
     private MongoClient mongoClient;
-    private MongoDatabase db;
     private MongoCollection<Document> flightsCollection;
     private boolean connected = false;
 
@@ -35,7 +34,7 @@ public class MongoConnector {
     public void connect() {
         if (!connected) {
             mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
-            db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
+            MongoDatabase db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
             flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
 
             connected = true;

@@ -15,8 +15,6 @@ import java.net.Socket;
  * Created by stefano on 08/06/16.
  */
 public class ADSBClient {
-    public static final String SERVER = "78.15.189.41";
-    public static final int PORT = 443;
     private static ADSBClient instance;
     private boolean connected = false;
     private MongoConnector mongoConnector;
