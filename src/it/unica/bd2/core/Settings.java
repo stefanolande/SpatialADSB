@@ -16,6 +16,7 @@ public class Settings {
     public static final int POSTGIS_SERVER_PORT = 5432;
     public static final String POSTGIS_DB_NAME = "flightsDB";
     public static final String POSTGIS_DB_URL = "jdbc:postgresql://" + POSTGIS_SERVER_IP + ":" + POSTGIS_SERVER_PORT + "/" + POSTGIS_DB_NAME;
-    public static String POSTGIS_DB_USERNAME = "postgres";
-    public static String POSTGIS_DB_PASSWORD = "cavallo";
+    public static final int MIN_TRACK_SIZE = 100;
+    public static final String POSTGIS_DB_USERNAME = "postgres";
+    public static final String POSTGIS_DB_PASSWORD = "cavallo";
 }

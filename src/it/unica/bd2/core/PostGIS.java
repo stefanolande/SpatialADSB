@@ -15,8 +15,23 @@ import java.util.List;
  * Created by serus on 16/06/16.
  */
 public class PostGIS {
+    private static PostGIS instace;
     private java.sql.Connection connection;
     private boolean isConnected = false;
+
+    private PostGIS() {
+    }
+
+    public static PostGIS getInstance() {
+
+        if (instace == null) {
+            instace = new PostGIS();
+        }
+
+        return instace;
+    }
+
+    ;
 
     /*
      * metodo connect
@@ -49,7 +64,7 @@ public class PostGIS {
         }
     }
 
-    public void insert() {
+    public void sync() {
         try {
 
             MongoConnector mongoConnector = MongoConnector.getInstance();
@@ -64,21 +79,24 @@ public class PostGIS {
                 Document flight = mongoCursor.next();
                 Long flightId = flight.getLong("flightID");
                 List<Document> pointList = (List<Document>) flight.get("points");
-                Point[] pointsVector = new Point[pointList.size()];
 
-                int i = 0;
-                for (Document point : pointList) {
-                    pointsVector[i] = new Point(point.getDouble("latitude"), point.getDouble("longitude"), point.getDouble("altitude"));
-                    i++;
-                }
-                LineString track = new LineString(pointsVector);
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO flights (flightId, track) VALUES (?, ?)");
-                preparedStatement.setString(1, flightId.toString());
-                preparedStatement.setObject(2, new PGgeometry(track));
-                int num = preparedStatement.executeUpdate();
-                preparedStatement.close();
-                if (num == 0) {
-                    throw new RuntimeException("Insert failed");
+                if (pointList.size() > Settings.MIN_TRACK_SIZE) {
+                    Point[] pointsVector = new Point[pointList.size()];
+
+                    int i = 0;
+                    for (Document point : pointList) {
+                        pointsVector[i] = new Point(point.getDouble("latitude"), point.getDouble("longitude"), new Double(point.getInteger("altitude")));
+                        i++;
+                    }
+                    LineString track = new LineString(pointsVector);
+                    PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO flights (flightid, track) VALUES (?, ?)");
+                    preparedStatement.setString(1, flightId.toString());
+                    preparedStatement.setObject(2, new PGgeometry(track));
+                    int num = preparedStatement.executeUpdate();
+                    preparedStatement.close();
+                    if (num == 0) {
+                        throw new RuntimeException("Insert failed");
+                    }
                 }
 
             }

@@ -1,6 +1,7 @@
 package it.unica.bd2.fx;
 
 import it.unica.bd2.core.ADSBClient;
+import it.unica.bd2.core.PostGIS;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,6 +9,7 @@ import javafx.scene.text.Text;
 
 public class Controller {
 
+    public Button syncButton;
     @FXML
     private Text adsbStatusString;
     @FXML
@@ -29,6 +31,16 @@ public class Controller {
             adsbButton.setText("Connect ADSB");
             adsbStatusString.setText("ADSB Status: disconnected");
         }
+    }
+
+    @FXML
+    private void sync(ActionEvent event) {
+        PostGIS postGIS = PostGIS.getInstance();
+        postGIS.connect();
+        syncButton.setText("Syncing...");
+        postGIS.sync();
+        syncButton.setText("Sync");
+        postGIS.disconnect();
     }
 
     public void destroy() {

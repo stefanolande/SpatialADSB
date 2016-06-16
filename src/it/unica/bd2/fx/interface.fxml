@@ -17,7 +17,7 @@
         <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0">
             <children>
                 <Button fx:id="adsbButton" mnemonicParsing="false" onAction="#adsbButtonClick" text="Connect ADSB"/>
-                <Button mnemonicParsing="false" text="Sync data"/>
+                <Button fx:id="syncButton" mnemonicParsing="false" text="Sync data" onAction="#sync"/>
             </children>
         </HBox>
         <Separator prefWidth="200.0"/>
