@@ -10,6 +10,7 @@ import javafx.scene.text.Text;
 public class Controller {
 
     public Button syncButton;
+    public Button queryButton;
     @FXML
     private Text adsbStatusString;
     @FXML
@@ -50,5 +51,15 @@ public class Controller {
 
     public void setMainApp(Main mainApp) {
         this.mainApp = mainApp;
+    }
+
+    public void query(ActionEvent event) {
+        PostGIS postGIS = PostGIS.getInstance();
+        postGIS.connect();
+        queryButton.setText("Querying..");
+        postGIS.query();
+        queryButton.setText("Query");
+        postGIS.disconnect();
+
     }
 }
