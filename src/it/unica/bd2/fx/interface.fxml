@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-      minHeight="-Infinity"
-      minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
       fx:controller="it.unica.bd2.fx.Controller">
     <children>
-        <Button fx:id="adsbButton" mnemonicParsing="false" onAction="#adsbButtonClick" text="Connect ADSB"/>
+        <TableView prefHeight="379.0" prefWidth="600.0">
+            <columns>
+                <TableColumn prefWidth="75.0" text="C1"/>
+                <TableColumn prefWidth="75.0" text="C2"/>
+            </columns>
+        </TableView>
+        <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0">
+            <children>
+                <Button fx:id="adsbButton" mnemonicParsing="false" onAction="#adsbButtonClick" text="Connect ADSB"/>
+                <Button mnemonicParsing="false" text="Sync data"/>
+            </children>
+        </HBox>
         <Separator prefWidth="200.0"/>
         <Text fx:id="adsbStatusString" strokeType="OUTSIDE" strokeWidth="0.0" text="ADSB status: disconnected"
               wrappingWidth="300" VBox.vgrow="ALWAYS"/>

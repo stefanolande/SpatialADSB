@@ -33,17 +33,20 @@ public class MongoConnector {
     }
 
     public void connect() {
+        if (!connected) {
+            mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
+            db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
+            flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
 
-        mongoClient = new MongoClient(Settings.MONGO_SERVER_IP, Settings.MONGO_SERVER_PORT);
-        db = mongoClient.getDatabase(Settings.MONGO_DB_NAME);
-        flightsCollection = db.getCollection(Settings.MONGO_COLLECTION_NAME);
-
-        connected = true;
+            connected = true;
+        }
     }
 
     public void disconnect() {
-        mongoClient.close();
-        connected = false;
+        if (connected) {
+            mongoClient.close();
+            connected = false;
+        }
     }
 
     public boolean isConnected() {
