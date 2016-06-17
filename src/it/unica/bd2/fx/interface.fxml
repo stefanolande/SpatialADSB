@@ -26,7 +26,10 @@
             </children>
         </HBox>
         <Separator prefWidth="200.0"/>
-        <Text fx:id="adsbStatusString" strokeType="OUTSIDE" strokeWidth="0.0" text="ADSB status: disconnected"
-              wrappingWidth="383.0" VBox.vgrow="ALWAYS"/>
+        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 2;">
+            <children>
+                <Text fx:id="adsbStatusString" strokeType="OUTSIDE" strokeWidth="0.0" text="ADSB status: disconnected"/>
+            </children>
+        </HBox>
     </children>
 </VBox>
