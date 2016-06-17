@@ -8,17 +8,21 @@
       minHeight="-Infinity" minWidth="-Infinity" prefHeight="275.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8"
       fx:controller="it.unica.bd2.fx.Controller">
     <children>
-        <TableView fx:id="comuniTable" prefHeight="375.0" prefWidth="400.0">
+        <TableView fx:id="comuniTable" prefHeight="380.0" prefWidth="350.0">
             <columns>
-                <TableColumn fx:id="nomeColumn" prefWidth="200.0" text="Comune"/>
-                <TableColumn fx:id="sorvoliColumn" prefWidth="200.0" text="Numero di Sorvoli"/>
+                <TableColumn fx:id="nomeColumn" text="Comune"/>
+                <TableColumn fx:id="sorvoliColumn" style="-fx-alignment: CENTER;" text="Numero di Sorvoli"/>
             </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
         </TableView>
         <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0" style="-fx-spacing: 15;">
             <children>
-                <Button fx:id="adsbButton" mnemonicParsing="false" onAction="#adsbButtonClick" text="Connect ADSB"/>
-                <Button fx:id="syncButton" mnemonicParsing="false" onAction="#sync" text="Sync data"/>
-                <Button fx:id="queryButton" mnemonicParsing="false" onAction="#query" text="Query"/>
+                <Button fx:id="adsbButton" minWidth="140" mnemonicParsing="false" onAction="#adsbButtonClick"
+                        text="Connect ADSB"/>
+                <Button fx:id="syncButton" minWidth="90" mnemonicParsing="false" onAction="#sync" text="Sync data"/>
+                <Button fx:id="queryButton" minWidth="100" mnemonicParsing="false" onAction="#query" text="Query"/>
             </children>
         </HBox>
         <Separator prefWidth="200.0"/>

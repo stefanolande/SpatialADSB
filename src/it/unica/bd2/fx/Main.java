@@ -34,7 +34,7 @@ public class Main extends Application {
         TableColumn<Comune, String> sorvoliColumn = (TableColumn) comuniTable.getColumns().get(1);
 
         nomeColumn.prefWidthProperty().bind(comuniTable.widthProperty().multiply(0.6));
-        sorvoliColumn.prefWidthProperty().bind(comuniTable.widthProperty().multiply(0.4));
+        sorvoliColumn.prefWidthProperty().bind(comuniTable.widthProperty().multiply(0.40));
 
 
         // Give the controller access to the main app.
