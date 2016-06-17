@@ -137,14 +137,14 @@ public class PostGIS {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        query2();
         return lista;
     }
 
+
     /*
-    * Dato un comune,
-     */
-    public void query2() {
+    * Dato un punto, TOTALMENTE DA MODIFICARE
+    */
+    public void voliPerPunto(Point punto) {
 
         Statement statement = null;
         try {
@@ -154,7 +154,37 @@ public class PostGIS {
                     "from comuni c " +
                     "join flights f " +
                     "on st_intersects(c.geom, f.track) " +
-                    "where c.nome='ASSEMINI' " +
+                    "where c.nome='///////' " +
+                    "group by c.nome " +
+                    "order by sorvoli desc;");
+
+            while (resultSet.next()) {
+                String nomeComune = resultSet.getString(1);
+                int sorvoli = resultSet.getInt(2);
+                System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
+            }
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*
+    * Dato un comune,
+     */
+    public void query2(String area) {
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("" +
+                    "select c.nome, count(*) as sorvoli " +
+                    "from comuni c " +
+                    "join flights f " +
+                    "on st_intersects(c.geom, f.track) " +
+                    "where c.nome='" + area + "' " +
                     "group by c.nome " +
                     "order by sorvoli desc;");
 
