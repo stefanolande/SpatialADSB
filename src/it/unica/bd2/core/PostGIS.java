@@ -137,14 +137,14 @@ public class PostGIS {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        query2();
         return lista;
     }
 
     /*
     * Dato un comune,
      */
-    public void query2(String areaRicercata) {
+    public void query2() {
 
         Statement statement = null;
         try {
@@ -154,7 +154,7 @@ public class PostGIS {
                     "from comuni c " +
                     "join flights f " +
                     "on st_intersects(c.geom, f.track) " +
-                    "where c.nome=='" + areaRicercata + "' " +
+                    "where c.nome='ASSEMINI' " +
                     "group by c.nome " +
                     "order by sorvoli desc;");
 
