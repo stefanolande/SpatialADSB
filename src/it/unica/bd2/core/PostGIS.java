@@ -84,7 +84,6 @@ public class PostGIS {
 
                     int i = 0;
                     for (Document point : pointList) {
-                        //pointsVector[i] = new Point(point.getDouble("latitude"), point.getDouble("longitude"), new Double(point.getInteger("altitude")));
                         pointsVector[i] = new Point(point.getDouble("longitude"), point.getDouble("latitude"), new Double(point.getInteger("altitude")));
                         i++;
                     }
@@ -123,12 +122,7 @@ public class PostGIS {
                     "order by sorvoli desc;");
 
             while (resultSet.next()) {
-                /*
-				* Retrieve the geometry as an object then cast it to the geometry type.
-				* Print things out.
-				*/
                 String nomeComune = resultSet.getString(1);
-                //PGgeometry track = (PGgeometry) resultSet.getObject(2);
                 int sorvoli = resultSet.getInt(2);
                 System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
             }
@@ -139,6 +133,38 @@ public class PostGIS {
         }
 
     }
+
+    /*
+    * Dato un comune,
+     */
+    public void query2(String areaRicercata) {
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("" +
+                    "select c.nome, count(*) as sorvoli " +
+                    "from comuni c " +
+                    "join flights f " +
+                    "on st_intersects(c.geom, f.track) " +
+                    "where c.nome=='" + areaRicercata + "' " +
+                    "group by c.nome " +
+                    "order by sorvoli desc;");
+
+            while (resultSet.next()) {
+                String nomeComune = resultSet.getString(1);
+                int sorvoli = resultSet.getInt(2);
+                System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
+            }
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 
 }
