@@ -10,6 +10,7 @@ public class Main extends Application {
 
     private Controller controller;
 
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -35,6 +36,5 @@ public class Main extends Application {
         super.stop();
         controller.destroy();
     }
-
 
 }

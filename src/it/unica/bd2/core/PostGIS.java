@@ -1,6 +1,9 @@
 package it.unica.bd2.core;
 
 import com.mongodb.client.MongoCursor;
+import it.unica.bd2.model.Comune;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.bson.Document;
 import org.postgis.LineString;
 import org.postgis.PGgeometry;
@@ -111,7 +114,9 @@ public class PostGIS {
     /*
     * TO DO
      */
-    public void query() {
+    public ObservableList<Comune> query() {
+
+        ObservableList<Comune> lista = FXCollections.observableArrayList();
 
         try (Statement statement = connection.createStatement()) {
 
@@ -126,11 +131,13 @@ public class PostGIS {
                 String nomeComune = resultSet.getString(1);
                 int sorvoli = resultSet.getInt(2);
                 System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
+                lista.add(new Comune(nomeComune, sorvoli + ""));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        return lista;
     }
 
     /*
