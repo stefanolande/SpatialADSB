@@ -5,7 +5,6 @@ import org.bson.Document;
 import org.postgis.LineString;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
-import org.postgresql.util.PGobject;
 
 import java.sql.*;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.List;
  * Created by serus on 16/06/16.
  */
 public class PostGIS {
-    private static PostGIS instace;
+    private static PostGIS instance;
     private java.sql.Connection connection;
     private boolean isConnected = false;
 
@@ -23,14 +22,12 @@ public class PostGIS {
 
     public static PostGIS getInstance() {
 
-        if (instace == null) {
-            instace = new PostGIS();
+        if (instance == null) {
+            instance = new PostGIS();
         }
 
-        return instace;
+        return instance;
     }
-
-    ;
 
     /*
      * metodo connect
@@ -40,8 +37,8 @@ public class PostGIS {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(Settings.POSTGIS_DB_URL, Settings.POSTGIS_DB_USERNAME, Settings.POSTGIS_DB_PASSWORD);
 
-            ((org.postgresql.PGConnection) connection).addDataType("geometry", (Class<? extends PGobject>) Class.forName("org.postgis.PGgeometry"));
-            ((org.postgresql.PGConnection) connection).addDataType("box3d", (Class<? extends PGobject>) Class.forName("org.postgis.PGbox3d"));
+            ((org.postgresql.PGConnection) connection).addDataType("geometry", Class.forName("org.postgis.PGgeometry"));
+            ((org.postgresql.PGConnection) connection).addDataType("box3d", Class.forName("org.postgis.PGbox3d"));
             this.isConnected = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,9 +61,10 @@ public class PostGIS {
     }
 
     public void sync() {
+        MongoConnector mongoConnector = null;
         try {
 
-            MongoConnector mongoConnector = MongoConnector.getInstance();
+            mongoConnector = MongoConnector.getInstance();
             mongoConnector.connect();
             MongoCursor<Document> mongoCursor = mongoConnector.read();
 
@@ -102,7 +100,10 @@ public class PostGIS {
             }
         } catch (Exception e) {
             e.printStackTrace();
-
+        } finally {
+            if (mongoConnector != null) {
+                mongoConnector.disconnect();
+            }
         }
     }
 
@@ -111,9 +112,8 @@ public class PostGIS {
      */
     public void query() {
 
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
+
             ResultSet resultSet = statement.executeQuery("select c.nome, count(*) as sorvoli " +
                     "from comuni c " +
                     "join flights f " +
@@ -126,8 +126,6 @@ public class PostGIS {
                 int sorvoli = resultSet.getInt(2);
                 System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
             }
-            statement.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
