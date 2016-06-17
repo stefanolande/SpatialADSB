@@ -5,6 +5,7 @@ import org.bson.Document;
 import org.postgis.LineString;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
+import org.postgresql.util.PGobject;
 
 import java.sql.*;
 import java.util.List;
@@ -37,8 +38,8 @@ public class PostGIS {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(Settings.POSTGIS_DB_URL, Settings.POSTGIS_DB_USERNAME, Settings.POSTGIS_DB_PASSWORD);
 
-            ((org.postgresql.PGConnection) connection).addDataType("geometry", Class.forName("org.postgis.PGgeometry"));
-            ((org.postgresql.PGConnection) connection).addDataType("box3d", Class.forName("org.postgis.PGbox3d"));
+            ((org.postgresql.PGConnection) connection).addDataType("geometry", (Class<? extends PGobject>) Class.forName("org.postgis.PGgeometry"));
+            ((org.postgresql.PGConnection) connection).addDataType("box3d", (Class<? extends PGobject>) Class.forName("org.postgis.PGbox3d"));
             this.isConnected = true;
         } catch (Exception e) {
             e.printStackTrace();
