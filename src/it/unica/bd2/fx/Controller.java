@@ -3,6 +3,7 @@ package it.unica.bd2.fx;
 import it.unica.bd2.core.ADSBClient;
 import it.unica.bd2.core.PostGIS;
 import it.unica.bd2.model.Comune;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -58,12 +59,18 @@ public class Controller {
 
     @FXML
     private void sync(ActionEvent event) {
-        PostGIS postGIS = PostGIS.getInstance();
-        postGIS.connect();
-        syncButton.setText("Syncing...");
-        postGIS.sync();
-        syncButton.setText("Sync");
-        postGIS.disconnect();
+        new Thread() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> syncButton.setText("Syncing..."));
+                PostGIS postGIS = PostGIS.getInstance();
+                postGIS.connect();
+                postGIS.sync();
+                postGIS.disconnect();
+                Platform.runLater(() -> syncButton.setText("Sync data"));
+            }
+        }.start();
+
     }
 
     public void destroy() {
@@ -76,14 +83,23 @@ public class Controller {
     }
 
     public void query(ActionEvent event) {
-        PostGIS postGIS = PostGIS.getInstance();
-        postGIS.connect();
-        queryButton.setText("Querying..");
-        listaComuni = postGIS.query();
-        queryButton.setText("Query");
-        postGIS.disconnect();
+        new Thread() {
+            @Override
+            public void run() {
+                PostGIS postGIS = PostGIS.getInstance();
+                postGIS.connect();
 
-        comuniTable.setItems(listaComuni);
+                Platform.runLater(() -> queryButton.setText("Querying..."));
+
+                listaComuni = postGIS.query();
+
+                Platform.runLater(() -> queryButton.setText("Query"));
+
+                postGIS.disconnect();
+                comuniTable.setItems(listaComuni);
+            }
+        }.start();
 
     }
+
 }

@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-      minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="275.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8"
       fx:controller="it.unica.bd2.fx.Controller">
     <children>
-        <TableView fx:id="comuniTable" prefHeight="375.0" prefWidth="600.0">
+        <TableView fx:id="comuniTable" prefHeight="375.0" prefWidth="400.0">
             <columns>
-                <TableColumn fx:id="nomeColumn" prefWidth="150.0" text="Comune"/>
-                <TableColumn fx:id="sorvoliColumn" prefWidth="150.0" text="Numero di Sorvoli"/>
+                <TableColumn fx:id="nomeColumn" prefWidth="200.0" text="Comune"/>
+                <TableColumn fx:id="sorvoliColumn" prefWidth="200.0" text="Numero di Sorvoli"/>
             </columns>
         </TableView>
         <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0" style="-fx-spacing: 15;">
@@ -23,6 +23,6 @@
         </HBox>
         <Separator prefWidth="200.0"/>
         <Text fx:id="adsbStatusString" strokeType="OUTSIDE" strokeWidth="0.0" text="ADSB status: disconnected"
-              wrappingWidth="300" VBox.vgrow="ALWAYS"/>
+              wrappingWidth="383.0" VBox.vgrow="ALWAYS"/>
     </children>
 </VBox>
