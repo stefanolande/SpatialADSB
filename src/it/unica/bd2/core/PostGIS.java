@@ -234,17 +234,19 @@ public class PostGIS {
     * Dato un punto,
     * il punto dev essere formato dalla lat e long separate da uno spazio
      */
-    public ObservableList<Comune> query3(String s) {
+    public ObservableList<Comune> query3() {
 
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT f.flightid, count(*) as sorvoli FROM flights f where ST_Intersects(ST_Expand(ST_GeomFromText('POINT(41.78445 8.71803)', 4326), 5000), f.track) GROUP BY f.flightid");
-
+            ResultSet resultSet = statement.executeQuery("SELECT f.flightid, count(*) as sorvoli " +
+                    "FROM flights f where ST_Intersects(ST_Expand(ST_GeomFromText('POINT(8.71803 41.78445)', 4326), 5000), f.track) " +
+                    "group by f.flightid "+
+                    "order by sorvoli desc");
 
             while (resultSet.next()) {
-                int sorvoli = resultSet.getInt(2);
-                System.out.println("il punto " + " ha avuto " + sorvoli + " sorvoli dal volo ");
+                int sorvoli = resultSet.getInt(1);
+                System.out.println("il punto " + " ha avuto sorvoli dal volo "  + sorvoli);
             }
             statement.close();
 
