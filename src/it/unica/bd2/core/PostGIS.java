@@ -5,9 +5,7 @@ import it.unica.bd2.model.Comune;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.bson.Document;
-import org.postgis.LineString;
-import org.postgis.PGgeometry;
-import org.postgis.Point;
+import org.postgis.*;
 import org.postgresql.util.PGobject;
 
 import java.sql.*;
@@ -137,31 +135,63 @@ public class PostGIS {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        voliPerPunto();
         return lista;
     }
 
 
     /*
-    * Dato un punto, TOTALMENTE DA MODIFICARE
+    * Dato un punto
     */
-    public void voliPerPunto(Point punto) {
+    public void voliPerPunto() {
+        PreparedStatement preparedStatementDropTable = null;
+        try {
+            preparedStatementDropTable = connection.prepareStatement("DELETE from areascelta");
+            preparedStatementDropTable.execute();
+            preparedStatementDropTable.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        Point punto = new Point(8.9807033, 39.2901871, 14.18); //longitudine-latitudine
+        Point[] pointsVector = new Point[]{
+                new Point(punto.getX() - 0.009, punto.getY() + 0.05, punto.getZ()),
+                new Point(punto.getX() + 0.009, punto.getY() + 0.05, punto.getZ()),
+                new Point(punto.getX() - 0.009, punto.getY() - 0.05, punto.getZ()),
+                new Point(punto.getX() + 0.009, punto.getY() - 0.05, punto.getZ()),
+                new Point(punto.getX() - 0.009, punto.getY() + 0.05, punto.getZ())
+        };
+        Polygon area = new Polygon(new LinearRing[]{new LinearRing(pointsVector)});
+        area.setSrid(4326);
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO areascelta (area, track) VALUES (?, ?)");
+            preparedStatement.setString(1, "000000001");
+            preparedStatement.setObject(2, new PGgeometry(area));
+            int num = preparedStatement.executeUpdate();
+            preparedStatement.close();
+            if (num == 0) {
+                throw new RuntimeException("Insert failed");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         Statement statement = null;
         try {
             statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("" +
-                    "select c.nome, count(*) as sorvoli " +
-                    "from comuni c " +
+            ResultSet resultSet = statement.executeQuery("select c.area, count(*) as sorvoli " +
+                    "from areascelta c " +
                     "join flights f " +
-                    "on st_intersects(c.geom, f.track) " +
-                    "where c.nome='///////' " +
-                    "group by c.nome " +
+                    "on st_intersects(c.track, f.track) " +
+                    "group by c.area " +
                     "order by sorvoli desc;");
 
             while (resultSet.next()) {
-                String nomeComune = resultSet.getString(1);
                 int sorvoli = resultSet.getInt(2);
-                System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
+                System.out.println("Il punto che hai scelto ha avuto " + sorvoli + " sorvoli.");
             }
             statement.close();
 
