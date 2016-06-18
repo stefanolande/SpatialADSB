@@ -2,6 +2,7 @@ package it.unica.bd2.core;
 
 import com.mongodb.client.MongoCursor;
 import it.unica.bd2.model.Comune;
+import it.unica.bd2.model.Puntuale;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.bson.Document;
@@ -128,13 +129,13 @@ public class PostGIS {
             while (resultSet.next()) {
                 String nomeComune = resultSet.getString(1);
                 int sorvoli = resultSet.getInt(2);
-                System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
+                //System.out.println("Il comune di " + nomeComune + " ha avuto " + sorvoli + " sorvoli.");
                 lista.add(new Comune(nomeComune, sorvoli + ""));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        voliPerPunto();
+        //voliPerPunto();
         return lista;
     }
 
@@ -142,7 +143,8 @@ public class PostGIS {
     /*
     * Dato un punto
     */
-    public void voliPerPunto() {
+    public ObservableList<Puntuale> voliPerPunto(Point punto) {//Point punto = new Point(8.9807033, 39.2901871, 14.18); Punto in ASSEMINI//longitudine-latitudine
+        ObservableList<Puntuale> sorvoliPunto = FXCollections.observableArrayList();
         PreparedStatement preparedStatementDropTable = null;
         try {
             preparedStatementDropTable = connection.prepareStatement("DELETE from areascelta");
@@ -152,8 +154,6 @@ public class PostGIS {
             e.printStackTrace();
         }
 
-
-        Point punto = new Point(8.9807033, 39.2901871, 14.18); //longitudine-latitudine
         Point[] pointsVector = new Point[]{
                 new Point(punto.getX() - 0.009, punto.getY() + 0.05, punto.getZ()),
                 new Point(punto.getX() + 0.009, punto.getY() + 0.05, punto.getZ()),
@@ -191,12 +191,15 @@ public class PostGIS {
             while (resultSet.next()) {
                 int sorvoli = resultSet.getInt(2);
                 System.out.println("Il punto che hai scelto ha avuto " + sorvoli + " sorvoli.");
+                String puntoName = punto.getX() + " " + punto.getX();
+                sorvoliPunto.add(new Puntuale(puntoName, sorvoli + ""));
             }
             statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return sorvoliPunto;
 
     }
 
