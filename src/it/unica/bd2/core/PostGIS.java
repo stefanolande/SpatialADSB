@@ -241,6 +241,7 @@ public class PostGIS {
 
         Statement statement = null;
         try {
+            int tot=0;
             statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT f.flightid, count(*) as sorvoli " +
                     "FROM flights f where ST_Intersects(ST_Expand(ST_GeomFromText('POINT(8.71803 41.78445)', 4326), 5000), f.track) " +
@@ -249,8 +250,11 @@ public class PostGIS {
 
             while (resultSet.next()) {
                 int sorvoli = resultSet.getInt(1);
+                tot++;
                 System.out.println("il punto " + " ha avuto sorvoli dal volo "  + sorvoli);
             }
+            System.out.println("per un totale di "+tot+" voli");
+
             statement.close();
 
         } catch (SQLException e) {
