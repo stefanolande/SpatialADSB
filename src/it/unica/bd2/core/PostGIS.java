@@ -83,7 +83,6 @@ public class PostGIS {
 
                 if (pointList.size() > Settings.MIN_TRACK_SIZE) {
                     Point[] pointsVector = new Point[pointList.size()];
-
                     int i = 0;
                     for (Document point : pointList) {
                         pointsVector[i] = new Point(point.getDouble("longitude"), point.getDouble("latitude"), new Double(point.getInteger("altitude")));
@@ -200,6 +199,32 @@ public class PostGIS {
         }
 
     }
+
+    /*
+    * Dato un punto,
+    * il punto dev essere formato dalla lat e long separate da uno spazio
+     */
+    public ObservableList<Comune> query3(String s) {
+
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT f.flightid, count(*) as sorvoli FROM flights f where ST_Intersects(ST_Expand(ST_GeomFromText('POINT(41.78445 8.71803)', 4326), 5000), f.track) GROUP BY f.flightid");
+
+
+            while (resultSet.next()) {
+                int sorvoli = resultSet.getInt(2);
+                System.out.println("il punto " + " ha avuto " + sorvoli + " sorvoli dal volo ");
+            }
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
 
 }
