@@ -24,4 +24,7 @@ public class Settings {
     public static final int MIN_TRACK_SIZE = 100;
     public static final String POSTGIS_DB_USERNAME = "postgres";
     public static final String POSTGIS_DB_PASSWORD = "cavallo";
+
+    //costanti relative alle operazioni spaziali
+    public static final int DISTANCE = 5000;
 }

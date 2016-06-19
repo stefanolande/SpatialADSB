@@ -11,14 +11,23 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 public class Controller {
 
     @FXML
+    private Button localQueryButton;
+    @FXML
+    private Text localQueryLabel;
+    @FXML
+    private TextField latText;
+    @FXML
+    private TextField lonText;
+    @FXML
     private Button syncButton;
     @FXML
-    private Button queryButton;
+    private Button globalQueryButton;
     @FXML
     private TableView comuniTable;
     @FXML
@@ -82,18 +91,18 @@ public class Controller {
         this.mainApp = mainApp;
     }
 
-    public void query(ActionEvent event) {
+    public void globalQuery(ActionEvent event) {
         new Thread() {
             @Override
             public void run() {
                 PostGIS postGIS = PostGIS.getInstance();
                 postGIS.connect();
 
-                Platform.runLater(() -> queryButton.setText("Querying..."));
+                Platform.runLater(() -> globalQueryButton.setText("Querying..."));
 
-                listaComuni = postGIS.query();
+                listaComuni = postGIS.globalQuery();
 
-                Platform.runLater(() -> queryButton.setText("Query"));
+                Platform.runLater(() -> globalQueryButton.setText("Query"));
 
                 postGIS.disconnect();
                 comuniTable.setItems(listaComuni);
@@ -102,4 +111,45 @@ public class Controller {
 
     }
 
+
+    public void localQuery(ActionEvent actionEvent) {
+
+        latText.setStyle("");
+        lonText.setStyle("");
+
+        String latString = latText.getText();
+        String lonString = lonText.getText();
+        double lat, lon;
+
+        try {
+            lat = new Double(latString);
+        } catch (NumberFormatException e) {
+            latText.setStyle("-fx-background-color: yellow");
+            return;
+        }
+
+        try {
+            lon = new Double(lonString);
+        } catch (NumberFormatException e) {
+            lonText.setStyle("-fx-background-color: yellow");
+            return;
+        }
+
+        new Thread() {
+            @Override
+            public void run() {
+                PostGIS postGIS = PostGIS.getInstance();
+                postGIS.connect();
+
+                Platform.runLater(() -> localQueryButton.setText("Querying..."));
+
+                int sorvoli = postGIS.localQuery(lat, lon);
+
+                Platform.runLater(() -> localQueryButton.setText("Query"));
+
+                postGIS.disconnect();
+                localQueryLabel.setText("Numero di sorvoli: " + sorvoli);
+            }
+        }.start();
+    }
 }

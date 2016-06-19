@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-      minHeight="-Infinity" minWidth="-Infinity" prefHeight="275.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8"
-      fx:controller="it.unica.bd2.fx.Controller">
+      minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-spacing: 0;"
+      xmlns="http://javafx.com/javafx/8" fx:controller="it.unica.bd2.fx.Controller">
     <children>
         <TableView fx:id="comuniTable" prefHeight="380.0" prefWidth="350.0">
             <columns>
@@ -17,12 +17,38 @@
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
         </TableView>
-        <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0" style="-fx-spacing: 15;">
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5;">
+            <children>
+                <Button fx:id="globalQueryButton" minWidth="100" mnemonicParsing="false" onAction="#globalQuery"
+                        style="-fx-padding: 5;" text="Query">
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                </Button>
+            </children>
+        </HBox>
+        <Separator prefWidth="200.0"/>
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5; -fx-spacing: 10;">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lat"/>
+                <TextField fx:id="latText" minWidth="100.0" prefWidth="100.0" text="9.114167"/>
+                <Text layoutX="19.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lon"/>
+                <TextField fx:id="lonText" minWidth="100.0" prefHeight="25.0" prefWidth="100.0" text="39.222423"/>
+                <Button fx:id="localQueryButton" minWidth="100" mnemonicParsing="false" onAction="#localQuery"
+                        text="Query"/>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5;">
+            <children>
+                <Text fx:id="localQueryLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="Numero di sorvoli:"/>
+            </children>
+        </HBox>
+        <Separator prefWidth="200.0"/>
+        <HBox alignment="BOTTOM_CENTER" prefHeight="0.0" prefWidth="600.0" style="-fx-spacing: 15; -fx-padding: 5;">
             <children>
                 <Button fx:id="adsbButton" minWidth="140" mnemonicParsing="false" onAction="#adsbButtonClick"
                         text="Connect ADSB"/>
                 <Button fx:id="syncButton" minWidth="90" mnemonicParsing="false" onAction="#sync" text="Sync data"/>
-                <Button fx:id="queryButton" minWidth="100" mnemonicParsing="false" onAction="#query" text="Query"/>
             </children>
         </HBox>
         <Separator prefWidth="200.0"/>
