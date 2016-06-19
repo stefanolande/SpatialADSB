@@ -8,14 +8,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 public class Controller {
 
+    @FXML
+    private ChoiceBox comuniChoice;
+    @FXML
+    private Button comuneQueryButton;
     @FXML
     private Button localQueryButton;
     @FXML
@@ -146,6 +147,27 @@ public class Controller {
                 int sorvoli = postGIS.localQuery(lat, lon);
 
                 Platform.runLater(() -> localQueryButton.setText("Query"));
+
+                postGIS.disconnect();
+                localQueryLabel.setText("Numero di sorvoli: " + sorvoli);
+            }
+        }.start();
+    }
+
+    public void comuneQuery(ActionEvent actionEvent) {
+        String comune = (String) comuniChoice.getValue();
+
+        new Thread() {
+            @Override
+            public void run() {
+                PostGIS postGIS = PostGIS.getInstance();
+                postGIS.connect();
+
+                Platform.runLater(() -> comuneQueryButton.setText("Querying..."));
+
+                int sorvoli = postGIS.localQuery(comune);
+
+                Platform.runLater(() -> comuneQueryButton.setText("Query"));
 
                 postGIS.disconnect();
                 localQueryLabel.setText("Numero di sorvoli: " + sorvoli);

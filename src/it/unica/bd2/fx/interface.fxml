@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="BOTTOM_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
       minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" style="-fx-spacing: 0;"
       xmlns="http://javafx.com/javafx/8" fx:controller="it.unica.bd2.fx.Controller">
@@ -34,8 +34,16 @@
                 <TextField fx:id="latText" minWidth="100.0" prefWidth="100.0" text="9.114167"/>
                 <Text layoutX="19.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lon"/>
                 <TextField fx:id="lonText" minWidth="100.0" prefHeight="25.0" prefWidth="100.0" text="39.222423"/>
-                <Button fx:id="localQueryButton" minWidth="100" mnemonicParsing="false" onAction="#localQuery"
-                        text="Query"/>
+                <Button fx:id="localQueryButton" alignment="CENTER" minWidth="100" mnemonicParsing="false"
+                        onAction="#localQuery" text="Query"/>
+            </children>
+        </HBox>
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5; -fx-spacing: 40;">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comune"/>
+                <ChoiceBox prefWidth="150.0" fx:id="comuniChoice"/>
+                <Button fx:id="comuneQueryButton" alignment="CENTER" minWidth="100" mnemonicParsing="false"
+                        onAction="#comuneQuery" text="Query"/>
             </children>
         </HBox>
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5;">

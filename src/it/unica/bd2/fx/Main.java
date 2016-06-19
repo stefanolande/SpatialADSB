@@ -1,10 +1,12 @@
 package it.unica.bd2.fx;
 
+import it.unica.bd2.core.PostGIS;
 import it.unica.bd2.model.Comune;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -23,7 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("interface.fxml"));
         primaryStage.setTitle("SpatialADSB");
-        primaryStage.setScene(new Scene(root, 400, 400));
+        primaryStage.setScene(new Scene(root, 400, 500));
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("interface.fxml"));
         fxmlLoader.load();
@@ -38,6 +40,13 @@ public class Main extends Application {
         sorvoliColumn.prefWidthProperty().bind(comuniTable.widthProperty().multiply(0.40));
 
         primaryStage.getIcons().add(new Image("file:icon.png"));
+
+        PostGIS postGIS = PostGIS.getInstance();
+        postGIS.connect();
+        ChoiceBox comuniChoice = (ChoiceBox) primaryStage.getScene().lookup("#comuniChoice");
+        comuniChoice.setItems(postGIS.getComuni());
+        comuniChoice.setValue("CAGLIARI");
+        postGIS.disconnect();
 
         // Give the controller access to the main app.
         controller = fxmlLoader.getController();

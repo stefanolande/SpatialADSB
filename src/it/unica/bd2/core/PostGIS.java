@@ -161,4 +161,47 @@ public class PostGIS {
         return sorvoli;
     }
 
+    public int localQuery(String comune) {
+
+        PreparedStatement statement = null;
+        int sorvoli = 0;
+        try {
+            statement = connection.prepareStatement("SELECT count(*)" +
+                    "FROM flights f where ST_DWithin(" +
+                    "ST_CENTROID((SELECT geom from comuni where nome = ?))" +
+                    ", f.track, " + Settings.DISTANCE + ", false)");
+
+            statement.setString(1, comune);
+
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            sorvoli = resultSet.getInt(1);
+
+            statement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sorvoli;
+    }
+
+    public ObservableList<String> getComuni() {
+
+        ObservableList<String> list = FXCollections.observableArrayList();
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select nome from comuni order by nome asc");
+
+            while (rs.next()) {
+                list.add(rs.getString(1));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
 }
