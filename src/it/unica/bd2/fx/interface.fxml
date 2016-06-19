@@ -41,7 +41,7 @@
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5; -fx-spacing: 40;">
             <children>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Comune"/>
-                <ChoiceBox prefWidth="150.0" fx:id="comuniChoice"/>
+                <ComboBox prefWidth="150.0" fx:id="comuniChoice"/>
                 <Button fx:id="comuneQueryButton" alignment="CENTER" minWidth="100" mnemonicParsing="false"
                         onAction="#comuneQuery" text="Query"/>
             </children>

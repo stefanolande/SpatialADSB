@@ -6,7 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
@@ -43,7 +43,7 @@ public class Main extends Application {
 
         PostGIS postGIS = PostGIS.getInstance();
         postGIS.connect();
-        ChoiceBox comuniChoice = (ChoiceBox) primaryStage.getScene().lookup("#comuniChoice");
+        ComboBox comuniChoice = (ComboBox) primaryStage.getScene().lookup("#comuniChoice");
         comuniChoice.setItems(postGIS.getComuni());
         comuniChoice.setValue("CAGLIARI");
         postGIS.disconnect();

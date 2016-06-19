@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 public class Controller {
 
     @FXML
-    private ChoiceBox comuniChoice;
+    private ComboBox comuniChoice;
     @FXML
     private Button comuneQueryButton;
     @FXML
