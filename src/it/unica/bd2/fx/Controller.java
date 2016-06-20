@@ -103,7 +103,7 @@ public class Controller {
 
                 listaComuni = postGIS.globalQuery();
 
-                Platform.runLater(() -> globalQueryButton.setText("Query"));
+                Platform.runLater(() -> globalQueryButton.setText("Global query"));
 
                 postGIS.disconnect();
                 Platform.runLater(() -> comuniTable.setItems(listaComuni));
