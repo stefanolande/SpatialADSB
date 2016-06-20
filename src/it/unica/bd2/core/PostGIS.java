@@ -64,22 +64,35 @@ public class PostGIS {
         }
     }
 
+    //write in the relational db all the new flights, and the one with new point since last sync
+/*    CREATE TABLE public.stats
+            (
+                    id smallint NOT NULL PRIMARY KEY,
+                    "timestamp" bigint
+    )*/
     public void sync() {
         MongoConnector mongoConnector = null;
         try {
+            //get the timestamp of last sync
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select timestamp from stats");
+            rs.next();
+            long timestamp = rs.getLong(1);
+            System.out.println(timestamp);
 
+            //read the flight with the last timestamp greater than the timestamp of the last sync
             mongoConnector = MongoConnector.getInstance();
             mongoConnector.connect();
-            MongoCursor<Document> mongoCursor = mongoConnector.read();
-
-            PreparedStatement preparedStatementDropTable = connection.prepareStatement("DELETE from flights");
-            preparedStatementDropTable.execute();
-            preparedStatementDropTable.close();
+            MongoCursor<Document> mongoCursor = mongoConnector.read(timestamp);
 
             while (mongoCursor.hasNext()) {
                 Document flight = mongoCursor.next();
                 Long flightId = flight.getLong("flightID");
                 List<Document> pointList = (List<Document>) flight.get("points");
+
+                PreparedStatement preparedStatementDropTable = connection.prepareStatement("DELETE from flights WHERE flightid = '" + flightId + "'");
+                preparedStatementDropTable.execute();
+                preparedStatementDropTable.close();
 
                 if (pointList.size() > Settings.MIN_TRACK_SIZE) {
                     Point[] pointsVector = new Point[pointList.size()];
@@ -101,6 +114,11 @@ public class PostGIS {
                 }
 
             }
+
+            //update the last sync timestamp
+            Statement updateStatement = connection.createStatement();
+            updateStatement.execute("UPDATE STATS SET timestamp =" + (System.currentTimeMillis() / 1000L));
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

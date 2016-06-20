@@ -91,4 +91,14 @@ public class MongoConnector {
 
         return null;
     }
+
+    //get flights with timestamp of last point greater than the parameter
+    public MongoCursor<Document> read(long timestamp) {
+        if (connected) {
+            Document query = new Document().append("points.timestamp", new Document("$gt", timestamp));
+            return flightsCollection.find(query).iterator();
+        }
+
+        return null;
+    }
 }
