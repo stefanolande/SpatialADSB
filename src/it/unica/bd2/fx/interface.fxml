@@ -20,7 +20,7 @@
         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-padding: 5;">
             <children>
                 <Button fx:id="globalQueryButton" minWidth="100" mnemonicParsing="false" onAction="#globalQuery"
-                        style="-fx-padding: 5;" text="Query">
+                        style="-fx-padding: 5;" text="Global query">
                     <opaqueInsets>
                         <Insets/>
                     </opaqueInsets>
