@@ -135,7 +135,8 @@ public class PostGIS {
 
         try (Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("select c.nome, count(*) as sorvoli " +
+            ResultSet resultSet = statement.executeQuery("" +
+                    "select c.nome, count(*) as sorvoli " +
                     "from comuni c " +
                     "join flights f " +
                     "on st_intersects(c.geom, f.track) " +
